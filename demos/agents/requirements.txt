@@ -1,0 +1,6 @@
+# Simulation mode — no API key needed
+# (no extra deps required beyond Python stdlib)
+
+# Real CrewAI mode (optional):
+# pip install crewai langchain-anthropic
+# Set env: ANTHROPIC_API_KEY=your_key
