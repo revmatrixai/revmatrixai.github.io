@@ -1,0 +1,232 @@
+# ================================================================
+# RevMatrix — Kubernetes Deployment
+# Enterprise-grade, security hardened
+# ================================================================
+# Apply: kubectl apply -f k8s-deployment.yaml
+# ================================================================
+
+---
+# Namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: production
+  labels:
+    app.kubernetes.io/managed-by: revmatrix
+
+---
+# Secret (values injected by CI/CD — never hardcode)
+apiVersion: v1
+kind: Secret
+metadata:
+  name: revmatrix-secrets
+  namespace: production
+type: Opaque
+# Set via: kubectl create secret generic revmatrix-secrets \
+#            --from-literal=api-key=YOUR_KEY \
+#            --from-literal=db-url=YOUR_DB_URL
+
+---
+# ConfigMap (non-sensitive config)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: revmatrix-config
+  namespace: production
+data:
+  ENV: "production"
+  PORT: "8000"
+  ALLOWED_ORIGINS: "https://revmatrixai.github.io"
+  RATE_LIMIT_RPM: "10"
+  LOG_LEVEL: "warning"
+
+---
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: revmatrix-api
+  namespace: production
+  labels:
+    app: revmatrix-api
+    version: "1.0.0"
+    managed-by: revmatrix-agent
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: revmatrix-api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0    # Zero-downtime rolling deploy
+  template:
+    metadata:
+      labels:
+        app: revmatrix-api
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+    spec:
+      # Security: don't run as root
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+
+      # Anti-affinity: spread pods across nodes
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values: [revmatrix-api]
+                topologyKey: kubernetes.io/hostname
+
+      containers:
+        - name: api
+          image: ghcr.io/revmatrixai/revmatrix-api:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+
+          # Strict resource limits
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+
+          # Security: drop all capabilities
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+
+          # Environment from ConfigMap + Secret
+          envFrom:
+            - configMapRef:
+                name: revmatrix-config
+          env:
+            - name: API_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: revmatrix-secrets
+                  key: api-key
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: revmatrix-secrets
+                  key: db-url
+
+          # Health checks
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+          # Temp dir (read-only root needs this)
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+
+      volumes:
+        - name: tmp
+          emptyDir: {}
+
+      # Graceful termination
+      terminationGracePeriodSeconds: 30
+
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: revmatrix-api
+  namespace: production
+spec:
+  selector:
+    app: revmatrix-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+  type: ClusterIP
+
+---
+# HorizontalPodAutoscaler — scale 2-10 pods based on CPU
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: revmatrix-api-hpa
+  namespace: production
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: revmatrix-api
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+
+---
+# NetworkPolicy — restrict ingress/egress
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: revmatrix-api-netpol
+  namespace: production
+spec:
+  podSelector:
+    matchLabels:
+      app: revmatrix-api
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 8000
+  egress:
+    - ports:
+        - protocol: TCP
+          port: 443    # HTTPS outbound only
+        - protocol: TCP
+          port: 5432   # PostgreSQL
