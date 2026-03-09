@@ -1,0 +1,9 @@
+# Local simulation (no account needed)
+qiskit>=1.2.0
+qiskit-aer>=0.14.0
+scipy>=1.13.0
+numpy>=1.26.0
+
+# Real quantum hardware (free accounts)
+# pip install pyquafu           # Quafu 夸父 — quafu.baqis.ac.cn
+# pip install qiskit-ibm-runtime # IBM Quantum — quantum.ibm.com
