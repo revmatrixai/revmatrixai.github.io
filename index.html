@@ -5,392 +5,227 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="RevMatrix — AI-powered virtual technology company delivering web development, cybersecurity, AI agents, data science and quantum computing solutions.">
 <meta name="keywords" content="AI company, web development, cybersecurity, AI agents, data science, quantum computing">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="index, follow">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta property="og:title" content="RevMatrix — Automating the Future">
 <meta property="og:description" content="AI-powered virtual solutions for the next generation of businesses.">
+<meta property="og:type" content="website">
 <title>RevMatrix — Automating the Future. Virtually.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:wght@300;400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #030a12;
-  --surface: #071525;
-  --surface2: #0a1e30;
-  --cyan: #00e5ff;
-  --cyan-dim: rgba(0,229,255,0.12);
-  --cyan-glow: rgba(0,229,255,0.35);
-  --gold: #ffc947;
-  --text: #d6eeff;
-  --muted: #4d7a96;
-  --border: rgba(0,229,255,0.12);
-  --border-hover: rgba(0,229,255,0.45);
-}
+:root{--bg:#030a12;--surface:#071525;--surface2:#0a1e30;--cyan:#00e5ff;--cyan-dim:rgba(0,229,255,.12);--cyan-glow:rgba(0,229,255,.35);--green:#00ff88;--red:#ff4444;--text:#d6eeff;--muted:#4d7a96;--border:rgba(0,229,255,.12);--border-h:rgba(0,229,255,.45)}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;overflow-x:hidden;line-height:1.6}
+.cur{position:fixed;pointer-events:none;z-index:9999;mix-blend-mode:difference}
+.cur-dot{width:8px;height:8px;background:var(--cyan);border-radius:50%;transform:translate(-50%,-50%);transition:.1s}
+.cur-ring{width:40px;height:40px;border:1px solid var(--cyan);border-radius:50%;transform:translate(-50%,-50%);opacity:.5;transition:all .2s ease}
+#bgCanvas{position:fixed;inset:0;opacity:.05;pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:64px 64px}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 5vw;height:70px;background:rgba(3,10,18,.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+.logo{font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.25rem;letter-spacing:4px;text-decoration:none}
+.logo em{color:var(--cyan);font-style:normal;text-shadow:0 0 20px var(--cyan)}
+.logo span{color:var(--text)}
+.nav-links{display:flex;gap:2.5rem;list-style:none}
+.nav-links a{font-size:.78rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:.25s}
+.nav-links a:hover{color:var(--cyan)}
+.nav-btn{font-family:'Orbitron',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:2px;padding:10px 22px;background:transparent;color:var(--cyan);border:1px solid var(--cyan);cursor:pointer;transition:.3s;position:relative;overflow:hidden;text-transform:uppercase}
+.nav-btn::before{content:'';position:absolute;inset:0;background:var(--cyan);transform:scaleX(0);transform-origin:left;transition:.3s;z-index:-1}
+.nav-btn:hover{color:var(--bg)}
+.nav-btn:hover::before{transform:scaleX(1)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{width:24px;height:2px;background:var(--cyan);transition:.3s;display:block}
+.mobile-nav{display:none;position:fixed;inset:0;z-index:190;background:rgba(3,10,18,.98);backdrop-filter:blur(30px);flex-direction:column;align-items:center;justify-content:center;gap:2rem}
+.mobile-nav.open{display:flex}
+.mobile-nav a{font-family:'Orbitron',sans-serif;font-size:1.2rem;font-weight:700;letter-spacing:3px;color:var(--text);text-decoration:none;transition:.3s}
+.mobile-nav a:hover{color:var(--cyan)}
+section{position:relative;z-index:1}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 5vw 80px;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(0,229,255,.06) 0%,transparent 70%)}
+.hero-chip{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--border-h);padding:7px 20px;font-family:'Share Tech Mono',monospace;font-size:.7rem;letter-spacing:3px;color:var(--cyan);margin-bottom:3rem;animation:fadeUp .7s ease both}
+.chip-dot{width:7px;height:7px;background:var(--green);border-radius:50%;box-shadow:0 0 10px var(--green);animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.hero-title{font-family:'Orbitron',sans-serif;font-weight:900;font-size:clamp(3.5rem,10vw,8rem);line-height:.95;letter-spacing:-3px;margin-bottom:1.5rem;animation:fadeUp .7s .15s ease both}
+.hero-title .t1{color:var(--text);display:block}
+.hero-title .t2{color:var(--cyan);display:block;text-shadow:0 0 60px var(--cyan-glow),0 0 120px rgba(0,229,255,.15)}
+.hero-tag{font-family:'Share Tech Mono',monospace;font-size:.8rem;letter-spacing:5px;color:var(--muted);text-transform:uppercase;margin-bottom:1.8rem;animation:fadeUp .7s .25s ease both}
+.hero-desc{max-width:580px;font-size:1.1rem;font-weight:400;color:rgba(214,238,255,.65);line-height:1.75;margin:0 auto 3rem;animation:fadeUp .7s .35s ease both}
+.hero-btns{display:flex;gap:1.2rem;justify-content:center;flex-wrap:wrap;animation:fadeUp .7s .45s ease both}
+.btn-p{font-family:'Orbitron',sans-serif;font-weight:700;font-size:.7rem;letter-spacing:2px;padding:16px 40px;background:var(--cyan);color:var(--bg);border:none;cursor:pointer;clip-path:polygon(12px 0,100% 0,calc(100% - 12px) 100%,0 100%);transition:.3s;text-transform:uppercase;text-decoration:none;display:inline-block}
+.btn-p:hover{background:#fff;box-shadow:0 0 40px var(--cyan-glow);transform:translateY(-3px)}
+.btn-s{font-family:'Orbitron',sans-serif;font-weight:600;font-size:.7rem;letter-spacing:2px;padding:16px 40px;background:transparent;color:var(--text);border:1px solid rgba(214,238,255,.25);cursor:pointer;clip-path:polygon(12px 0,100% 0,calc(100% - 12px) 100%,0 100%);transition:.3s;text-transform:uppercase;text-decoration:none;display:inline-block}
+.btn-s:hover{border-color:var(--cyan);color:var(--cyan);transform:translateY(-3px)}
+.hero-metrics{display:flex;gap:4rem;margin-top:5rem;padding-top:3rem;border-top:1px solid var(--border);animation:fadeUp .7s .6s ease both;flex-wrap:wrap;justify-content:center}
+.metric-val{font-family:'Orbitron',sans-serif;font-size:2.2rem;font-weight:900;color:var(--cyan);text-shadow:0 0 20px var(--cyan-glow)}
+.metric-lbl{font-size:.72rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-top:4px}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.5rem;animation:fadeUp .7s .9s ease both}
+.scroll-hint span{font-family:'Share Tech Mono',monospace;font-size:.6rem;letter-spacing:3px;color:var(--muted)}
+.scroll-line{width:1px;height:50px;background:linear-gradient(var(--cyan),transparent);animation:drip 2s ease-in-out infinite}
+@keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+.marquee-wrap{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:14px 0;background:var(--surface);position:relative;z-index:1}
+.marquee-track{display:flex;gap:3rem;animation:marquee 25s linear infinite;white-space:nowrap}
+.marquee-item{font-family:'Share Tech Mono',monospace;font-size:.72rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase}
+.marquee-item em{color:var(--cyan);font-style:normal}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.about{padding:120px 5vw;max-width:1280px;margin:0 auto}
+.about-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.section-eyebrow{font-family:'Share Tech Mono',monospace;font-size:.68rem;letter-spacing:4px;color:var(--cyan);text-transform:uppercase;margin-bottom:1rem}
+.section-heading{font-family:'Orbitron',sans-serif;font-size:clamp(1.6rem,3.5vw,2.8rem);font-weight:700;line-height:1.2;margin-bottom:1.5rem}
+.section-heading span{color:var(--cyan)}
+.about-text{font-size:1rem;color:rgba(214,238,255,.65);line-height:1.85;margin-bottom:1.2rem}
+.hex-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.hex-item{border:1px solid var(--border);padding:24px 16px;text-align:center;background:var(--surface);transition:.35s;position:relative;overflow:hidden}
+.hex-item::before{content:'';position:absolute;top:-1px;left:0;right:0;height:2px;background:var(--cyan);transform:scaleX(0);transition:.35s}
+.hex-item:hover{background:var(--surface2);border-color:var(--border-h);transform:translateY(-4px)}
+.hex-item:hover::before{transform:scaleX(1)}
+.hex-ico{font-size:1.8rem;margin-bottom:.5rem;display:block}
+.hex-lbl{font-family:'Orbitron',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:1px;color:var(--text)}
+.services{padding:120px 5vw;background:linear-gradient(180deg,transparent,rgba(0,229,255,.025),transparent)}
+.services-inner{max-width:1280px;margin:0 auto}
+.section-head{text-align:center;margin-bottom:64px}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.svc{background:var(--surface);padding:48px 36px;border:1px solid var(--border);position:relative;overflow:hidden;transition:.4s;cursor:default}
+.svc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);transform:scaleX(0);transition:.4s}
+.svc:hover{background:var(--surface2);transform:translateY(-6px);border-color:var(--border-h);box-shadow:0 20px 60px rgba(0,229,255,.07)}
+.svc:hover::after{transform:scaleX(1)}
+.svc-num{font-family:'Share Tech Mono',monospace;font-size:.65rem;letter-spacing:3px;color:var(--muted);margin-bottom:1.5rem}
+.svc-ico{font-size:2.8rem;margin-bottom:1.2rem;display:block}
+.svc-name{font-family:'Orbitron',sans-serif;font-size:.9rem;font-weight:700;letter-spacing:1px;margin-bottom:.8rem;color:var(--text)}
+.svc-desc{font-size:.9rem;color:var(--muted);line-height:1.7;margin-bottom:1.5rem}
+.svc-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.5rem}
+.tag{font-family:'Share Tech Mono',monospace;font-size:.58rem;letter-spacing:1px;padding:3px 9px;border:1px solid rgba(0,229,255,.22);color:var(--cyan)}
+.svc-cta{display:inline-flex;align-items:center;gap:8px;font-family:'Orbitron',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:1px;color:var(--cyan);background:transparent;border:1px solid var(--border-h);padding:10px 18px;cursor:pointer;transition:.3s;text-transform:uppercase}
+.svc-cta:hover{background:var(--cyan-dim);border-color:var(--cyan)}
+.team{padding:120px 5vw;max-width:1280px;margin:0 auto}
+.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:20px;margin-top:64px}
+.member{border:1px solid var(--border);padding:32px 24px;text-align:center;background:var(--surface);transition:.35s;position:relative;overflow:hidden}
+.member::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 60%,rgba(0,229,255,.04))}
+.member:hover{border-color:var(--border-h);box-shadow:0 0 40px rgba(0,229,255,.09);transform:translateY(-4px)}
+.m-ring{width:72px;height:72px;border-radius:50%;margin:0 auto 1rem;background:linear-gradient(135deg,#0a4fff,var(--cyan));display:flex;align-items:center;justify-content:center;font-size:1.8rem;position:relative}
+.m-ring::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:1px solid var(--cyan);border-top-color:transparent;animation:spin 6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.m-name{font-family:'Orbitron',sans-serif;font-size:.75rem;font-weight:700;letter-spacing:1px;margin-bottom:.3rem}
+.m-role{font-size:.78rem;color:var(--muted);letter-spacing:1px;margin-bottom:.8rem}
+.m-online{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--green);letter-spacing:1px}
+.m-online::before{content:'● '}
+.how{padding:120px 5vw;background:linear-gradient(180deg,transparent,rgba(0,229,255,.025),transparent)}
+.how-inner{max-width:900px;margin:0 auto}
+.steps{margin-top:64px;display:flex;flex-direction:column}
+.step{display:grid;grid-template-columns:80px 1fr;gap:32px;align-items:start;padding:40px 0;border-bottom:1px solid var(--border)}
+.step:last-child{border-bottom:none}
+.step-num{font-family:'Orbitron',sans-serif;font-size:3rem;font-weight:900;color:var(--surface2);-webkit-text-stroke:1px var(--border-h);line-height:1;padding-top:4px}
+.step-title{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.5rem;color:var(--text)}
+.step-desc{font-size:.95rem;color:var(--muted);line-height:1.7}
+.step-meta{font-family:'Share Tech Mono',monospace;font-size:.62rem;letter-spacing:2px;color:var(--cyan);margin-bottom:.5rem}
+.contact-banner{padding:100px 5vw;text-align:center;position:relative;overflow:hidden}
+.contact-banner::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(0,229,255,.06) 0%,transparent 70%);pointer-events:none}
+.contact-banner h2{font-family:'Orbitron',sans-serif;font-size:clamp(2rem,5vw,4rem);font-weight:900;line-height:1.1;margin-bottom:1.2rem}
+.contact-banner p{font-size:1.05rem;color:var(--muted);max-width:500px;margin:0 auto 2.5rem;line-height:1.75}
+.socials-bar{padding:80px 5vw;max-width:1280px;margin:0 auto}
+.socials-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-top:48px}
+.social-item{border:1px solid var(--border);padding:24px 16px;text-align:center;transition:.35s;cursor:pointer;text-decoration:none;display:block;position:relative;overflow:hidden}
+.social-item::after{content:'';position:absolute;inset:0;background:var(--cyan);transform:scaleY(0);transform-origin:bottom;transition:.3s;z-index:0}
+.social-item:hover{border-color:var(--cyan)}
+.social-item:hover::after{transform:scaleY(1)}
+.social-item:hover .si-name,.social-item:hover .si-sub{color:var(--bg);position:relative;z-index:1}
+.social-item:hover .si-ico{position:relative;z-index:1}
+.si-ico{font-size:1.8rem;margin-bottom:.6rem;display:block;position:relative;z-index:1}
+.si-name{font-family:'Orbitron',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:1px;color:var(--text);transition:.3s;position:relative;z-index:1}
+.si-sub{font-size:.72rem;color:var(--muted);transition:.3s;margin-top:.2rem;position:relative;z-index:1}
+footer{border-top:1px solid var(--border);padding:48px 5vw;position:relative;z-index:1}
+.footer-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:2rem;margin-bottom:2rem}
+.footer-logo{font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.1rem;letter-spacing:4px}
+.footer-logo em{color:var(--cyan);font-style:normal}
+.footer-links{display:flex;gap:2rem;flex-wrap:wrap}
+.footer-links a{font-size:.78rem;letter-spacing:1px;color:var(--muted);text-decoration:none;transition:.25s}
+.footer-links a:hover{color:var(--cyan)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+.footer-copy{font-family:'Share Tech Mono',monospace;font-size:.62rem;letter-spacing:1px;color:var(--muted)}
+.footer-privacy{font-family:'Share Tech Mono',monospace;font-size:.58rem;color:var(--muted);max-width:480px;line-height:1.6;opacity:.7}
 
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; font-size: 16px; }
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Exo 2', sans-serif;
-  overflow-x: hidden;
-  line-height: 1.6;
-}
-
-/* ─── CURSOR ─── */
-.cur { position:fixed; pointer-events:none; z-index:9999; mix-blend-mode: difference; }
-.cur-dot { width:8px; height:8px; background:var(--cyan); border-radius:50%; transform:translate(-50%,-50%); transition:.1s; }
-.cur-ring { width:40px; height:40px; border:1px solid var(--cyan); border-radius:50%; transform:translate(-50%,-50%); opacity:.5; transition:all .2s ease; }
-
-/* ─── CANVAS ─── */
-#bgCanvas { position:fixed; inset:0; opacity:.05; pointer-events:none; z-index:0; }
-
-/* ─── GRID ─── */
-body::after {
-  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
-  background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
-  background-size: 64px 64px;
-}
-
-/* ─── NAV ─── */
-nav {
-  position: fixed; top:0; left:0; right:0; z-index:200;
-  display:flex; align-items:center; justify-content:space-between;
-  padding: 0 5vw;
-  height: 70px;
-  background: rgba(3,10,18,0.92);
-  backdrop-filter: blur(24px);
-  border-bottom: 1px solid var(--border);
-}
-.logo { font-family:'Orbitron',sans-serif; font-weight:900; font-size:1.25rem; letter-spacing:4px; text-decoration:none; }
-.logo em { color:var(--cyan); font-style:normal; text-shadow:0 0 20px var(--cyan); }
-.logo span { color:var(--text); }
-
-.nav-links { display:flex; gap:2.5rem; list-style:none; }
-.nav-links a { font-size:.78rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--muted); text-decoration:none; transition:.25s; font-family:'Exo 2',sans-serif; }
-.nav-links a:hover { color:var(--cyan); }
-
-.nav-btn {
-  font-family:'Orbitron',sans-serif; font-size:.65rem; font-weight:700; letter-spacing:2px;
-  padding:10px 22px; background:transparent; color:var(--cyan);
-  border:1px solid var(--cyan); cursor:pointer; transition:.3s; position:relative; overflow:hidden;
-  text-transform:uppercase;
-}
-.nav-btn::before { content:''; position:absolute; inset:0; background:var(--cyan); transform:scaleX(0); transform-origin:left; transition:.3s; z-index:-1; }
-.nav-btn:hover { color:var(--bg); }
-.nav-btn:hover::before { transform:scaleX(1); }
-
-.hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:4px; }
-.hamburger span { width:24px; height:2px; background:var(--cyan); transition:.3s; display:block; }
-
-/* ─── MOBILE NAV ─── */
-.mobile-nav {
-  display:none; position:fixed; inset:0; z-index:190;
-  background:rgba(3,10,18,0.98); backdrop-filter:blur(30px);
-  flex-direction:column; align-items:center; justify-content:center; gap:2rem;
-}
-.mobile-nav.open { display:flex; }
-.mobile-nav a { font-family:'Orbitron',sans-serif; font-size:1.2rem; font-weight:700; letter-spacing:3px; color:var(--text); text-decoration:none; transition:.3s; }
-.mobile-nav a:hover { color:var(--cyan); }
-
-/* ─── SECTIONS ─── */
-section { position:relative; z-index:1; }
-
-/* ─── HERO ─── */
-.hero {
-  min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
-  text-align:center; padding:120px 5vw 80px;
-  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,229,255,0.06) 0%, transparent 70%);
-}
-
-.hero-chip {
-  display:inline-flex; align-items:center; gap:10px;
-  border:1px solid var(--border-hover); padding:7px 20px;
-  font-family:'Share Tech Mono',monospace; font-size:.7rem; letter-spacing:3px; color:var(--cyan);
-  margin-bottom:3rem; animation:fadeUp .7s ease both;
-}
-.chip-dot { width:7px; height:7px; background:#00ff88; border-radius:50%; box-shadow:0 0 10px #00ff88; animation:blink 1.5s infinite; }
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
-
-.hero-title {
-  font-family:'Orbitron',sans-serif; font-weight:900;
-  font-size:clamp(3.5rem,10vw,8rem); line-height:.95; letter-spacing:-3px;
-  margin-bottom:1.5rem; animation:fadeUp .7s .15s ease both;
-}
-.hero-title .t1 { color:var(--text); display:block; }
-.hero-title .t2 { color:var(--cyan); display:block; text-shadow:0 0 60px var(--cyan-glow), 0 0 120px rgba(0,229,255,.15); }
-
-.hero-tag {
-  font-family:'Share Tech Mono',monospace; font-size:.8rem; letter-spacing:5px;
-  color:var(--muted); text-transform:uppercase; margin-bottom:1.8rem;
-  animation:fadeUp .7s .25s ease both;
-}
-
-.hero-desc {
-  max-width:580px; font-size:1.1rem; font-weight:400; color:rgba(214,238,255,.65);
-  line-height:1.75; margin:0 auto 3rem; animation:fadeUp .7s .35s ease both;
-}
-
-.hero-btns { display:flex; gap:1.2rem; justify-content:center; flex-wrap:wrap; animation:fadeUp .7s .45s ease both; }
-
-.btn-p {
-  font-family:'Orbitron',sans-serif; font-weight:700; font-size:.7rem; letter-spacing:2px;
-  padding:16px 40px; background:var(--cyan); color:var(--bg); border:none; cursor:pointer;
-  clip-path:polygon(12px 0,100% 0,calc(100% - 12px) 100%,0 100%);
-  transition:.3s; text-transform:uppercase; text-decoration:none; display:inline-block;
-}
-.btn-p:hover { background:#fff; box-shadow:0 0 40px var(--cyan-glow); transform:translateY(-3px); }
-
-.btn-s {
-  font-family:'Orbitron',sans-serif; font-weight:600; font-size:.7rem; letter-spacing:2px;
-  padding:16px 40px; background:transparent; color:var(--text); border:1px solid rgba(214,238,255,.25); cursor:pointer;
-  clip-path:polygon(12px 0,100% 0,calc(100% - 12px) 100%,0 100%);
-  transition:.3s; text-transform:uppercase; text-decoration:none; display:inline-block;
-}
-.btn-s:hover { border-color:var(--cyan); color:var(--cyan); transform:translateY(-3px); }
-
-.hero-metrics {
-  display:flex; gap:4rem; margin-top:5rem; padding-top:3rem;
-  border-top:1px solid var(--border); animation:fadeUp .7s .6s ease both;
-  flex-wrap:wrap; justify-content:center;
-}
-.metric-val { font-family:'Orbitron',sans-serif; font-size:2.2rem; font-weight:900; color:var(--cyan); text-shadow:0 0 20px var(--cyan-glow); }
-.metric-lbl { font-size:.72rem; letter-spacing:2px; color:var(--muted); text-transform:uppercase; margin-top:4px; }
-
-/* scroll hint */
-.scroll-hint { position:absolute; bottom:2rem; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:.5rem; animation:fadeUp .7s .9s ease both; }
-.scroll-hint span { font-family:'Share Tech Mono',monospace; font-size:.6rem; letter-spacing:3px; color:var(--muted); }
-.scroll-line { width:1px; height:50px; background:linear-gradient(var(--cyan),transparent); animation:drip 2s ease-in-out infinite; }
-@keyframes drip { 0%{transform:scaleY(0);transform-origin:top} 50%{transform:scaleY(1);transform-origin:top} 51%{transform:scaleY(1);transform-origin:bottom} 100%{transform:scaleY(0);transform-origin:bottom} }
-
-/* ─── MARQUEE ─── */
-.marquee-wrap { overflow:hidden; border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:14px 0; background:var(--surface); position:relative; z-index:1; }
-.marquee-track { display:flex; gap:3rem; animation:marquee 25s linear infinite; white-space:nowrap; }
-.marquee-item { font-family:'Share Tech Mono',monospace; font-size:.72rem; letter-spacing:3px; color:var(--muted); text-transform:uppercase; }
-.marquee-item em { color:var(--cyan); font-style:normal; }
-@keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-
-/* ─── ABOUT ─── */
-.about { padding:120px 5vw; max-width:1280px; margin:0 auto; }
-.about-inner { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
-.section-eyebrow { font-family:'Share Tech Mono',monospace; font-size:.68rem; letter-spacing:4px; color:var(--cyan); text-transform:uppercase; margin-bottom:1rem; }
-.section-heading { font-family:'Orbitron',sans-serif; font-size:clamp(1.6rem,3.5vw,2.8rem); font-weight:700; line-height:1.2; margin-bottom:1.5rem; }
-.section-heading span { color:var(--cyan); }
-.about-text { font-size:1rem; color:rgba(214,238,255,.65); line-height:1.85; margin-bottom:1.2rem; }
-.about-visual { position:relative; }
-.hex-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
-.hex-item {
-  border:1px solid var(--border); padding:24px 16px; text-align:center;
-  background:var(--surface); transition:.35s; position:relative; overflow:hidden;
-}
-.hex-item::before { content:''; position:absolute; top:-1px; left:0; right:0; height:2px; background:var(--cyan); transform:scaleX(0); transition:.35s; }
-.hex-item:hover { background:var(--surface2); border-color:var(--border-hover); transform:translateY(-4px); }
-.hex-item:hover::before { transform:scaleX(1); }
-.hex-ico { font-size:1.8rem; margin-bottom:.5rem; display:block; }
-.hex-lbl { font-family:'Orbitron',sans-serif; font-size:.6rem; font-weight:700; letter-spacing:1px; color:var(--text); }
-
-/* ─── SERVICES ─── */
-.services { padding:120px 5vw; background:linear-gradient(180deg,transparent,rgba(0,229,255,.025),transparent); }
-.services-inner { max-width:1280px; margin:0 auto; }
-.section-head { text-align:center; margin-bottom:64px; }
-.services-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; }
-
-.svc {
-  background:var(--surface); padding:48px 36px; border:1px solid var(--border);
-  position:relative; overflow:hidden; transition:.4s; cursor:default;
-}
-.svc::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--cyan),transparent); transform:scaleX(0); transition:.4s; }
-.svc:hover { background:var(--surface2); transform:translateY(-6px); border-color:var(--border-hover); box-shadow:0 20px 60px rgba(0,229,255,.07); }
-.svc:hover::after { transform:scaleX(1); }
-.svc-num { font-family:'Share Tech Mono',monospace; font-size:.65rem; letter-spacing:3px; color:var(--muted); margin-bottom:1.5rem; }
-.svc-ico { font-size:2.8rem; margin-bottom:1.2rem; display:block; }
-.svc-name { font-family:'Orbitron',sans-serif; font-size:.9rem; font-weight:700; letter-spacing:1px; margin-bottom:.8rem; color:var(--text); }
-.svc-desc { font-size:.9rem; color:var(--muted); line-height:1.7; margin-bottom:1.5rem; }
-.svc-tags { display:flex; flex-wrap:wrap; gap:6px; }
-.tag { font-family:'Share Tech Mono',monospace; font-size:.58rem; letter-spacing:1px; padding:3px 9px; border:1px solid rgba(0,229,255,.22); color:var(--cyan); }
-.svc-price { font-family:'Orbitron',sans-serif; font-size:.72rem; font-weight:700; color:var(--gold); margin-top:1.2rem; letter-spacing:1px; }
-
-/* ─── AI TEAM ─── */
-.team { padding:120px 5vw; max-width:1280px; margin:0 auto; }
-.team-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:20px; margin-top:64px; }
-.member {
-  border:1px solid var(--border); padding:32px 24px; text-align:center;
-  background:var(--surface); transition:.35s; position:relative; overflow:hidden;
-}
-.member::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,transparent 60%,rgba(0,229,255,.04)); }
-.member:hover { border-color:var(--border-hover); box-shadow:0 0 40px rgba(0,229,255,.09); transform:translateY(-4px); }
-.m-ring {
-  width:72px; height:72px; border-radius:50%; margin:0 auto 1rem;
-  background:linear-gradient(135deg,#0a4fff,var(--cyan));
-  display:flex; align-items:center; justify-content:center;
-  font-size:1.8rem; position:relative;
-}
-.m-ring::after {
-  content:''; position:absolute; inset:-4px; border-radius:50%;
-  border:1px solid var(--cyan); border-top-color:transparent;
-  animation:spin 6s linear infinite;
-}
-@keyframes spin { to{transform:rotate(360deg)} }
-.m-name { font-family:'Orbitron',sans-serif; font-size:.75rem; font-weight:700; letter-spacing:1px; margin-bottom:.3rem; }
-.m-role { font-size:.78rem; color:var(--muted); letter-spacing:1px; margin-bottom:.8rem; }
-.m-online { font-family:'Share Tech Mono',monospace; font-size:.6rem; color:#00ff88; letter-spacing:1px; }
-.m-online::before { content:'● '; }
-
-/* ─── HOW ─── */
-.how { padding:120px 5vw; background:linear-gradient(180deg,transparent,rgba(0,229,255,.025),transparent); }
-.how-inner { max-width:900px; margin:0 auto; }
-.steps { margin-top:64px; display:flex; flex-direction:column; gap:0; }
-.step {
-  display:grid; grid-template-columns:80px 1fr; gap:32px; align-items:start;
-  padding:40px 0; border-bottom:1px solid var(--border); position:relative;
-}
-.step:last-child { border-bottom:none; }
-.step-num {
-  font-family:'Orbitron',sans-serif; font-size:3rem; font-weight:900;
-  color:var(--surface2); -webkit-text-stroke:1px var(--border-hover);
-  line-height:1; padding-top:4px;
-}
-.step-title { font-family:'Orbitron',sans-serif; font-size:1rem; font-weight:700; margin-bottom:.5rem; color:var(--text); }
-.step-desc { font-size:.95rem; color:var(--muted); line-height:1.7; }
-.step-meta { font-family:'Share Tech Mono',monospace; font-size:.62rem; letter-spacing:2px; color:var(--cyan); margin-bottom:.5rem; }
-
-/* ─── PRICING ─── */
-.pricing { padding:120px 5vw; max-width:1280px; margin:0 auto; }
-.pricing-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:64px; }
-.plan {
-  border:1px solid var(--border); padding:44px 36px; background:var(--surface);
-  position:relative; transition:.35s;
-}
-.plan.featured { border-color:var(--cyan); background:var(--surface2); }
-.plan:hover { transform:translateY(-6px); border-color:var(--border-hover); }
-.plan-badge { position:absolute; top:-14px; left:50%; transform:translateX(-50%); background:var(--cyan); color:var(--bg); font-family:'Orbitron',sans-serif; font-size:.6rem; font-weight:900; letter-spacing:2px; padding:5px 16px; white-space:nowrap; }
-.plan-name { font-family:'Orbitron',sans-serif; font-size:.8rem; font-weight:700; letter-spacing:2px; color:var(--muted); text-transform:uppercase; margin-bottom:1rem; }
-.plan-price { font-family:'Orbitron',sans-serif; font-size:2.8rem; font-weight:900; color:var(--text); margin-bottom:.4rem; }
-.plan-price sup { font-size:1.2rem; vertical-align:top; margin-top:.6rem; display:inline-block; color:var(--muted); }
-.plan-period { font-size:.8rem; color:var(--muted); margin-bottom:2rem; }
-.plan-features { list-style:none; display:flex; flex-direction:column; gap:.8rem; margin-bottom:2.5rem; }
-.plan-features li { font-size:.9rem; color:rgba(214,238,255,.75); display:flex; gap:.6rem; }
-.plan-features li::before { content:'→'; color:var(--cyan); font-family:'Share Tech Mono',monospace; flex-shrink:0; }
-.plan-btn { width:100%; font-family:'Orbitron',sans-serif; font-size:.68rem; font-weight:700; letter-spacing:2px; padding:14px; background:transparent; color:var(--cyan); border:1px solid var(--cyan); cursor:pointer; transition:.3s; text-transform:uppercase; }
-.plan-btn:hover,.plan.featured .plan-btn { background:var(--cyan); color:var(--bg); }
-
-/* ─── CONTACT ─── */
-.contact { padding:120px 5vw; background:linear-gradient(180deg,transparent,rgba(0,229,255,.025),transparent); }
-.contact-inner { max-width:700px; margin:0 auto; text-align:center; }
-.contact-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:48px; text-align:left; }
-.form-group { display:flex; flex-direction:column; gap:8px; }
-.form-group.full { grid-column:1/-1; }
-.form-label { font-family:'Share Tech Mono',monospace; font-size:.65rem; letter-spacing:2px; color:var(--cyan); }
-.form-input, .form-select, .form-textarea {
-  background:var(--surface); border:1px solid var(--border); color:var(--text);
-  padding:14px 16px; font-family:'Exo 2',sans-serif; font-size:.9rem; outline:none; transition:.3s;
-  width:100%;
-}
-.form-input:focus,.form-select:focus,.form-textarea:focus { border-color:var(--cyan); box-shadow:0 0 0 1px var(--cyan-dim); }
-.form-textarea { min-height:140px; resize:vertical; }
-.form-select { appearance:none; cursor:pointer; }
-.form-submit {
-  grid-column:1/-1; width:100%; padding:18px; margin-top:8px;
-  font-family:'Orbitron',sans-serif; font-weight:700; font-size:.75rem; letter-spacing:3px;
-  background:var(--cyan); color:var(--bg); border:none; cursor:pointer; transition:.3s; text-transform:uppercase;
-  clip-path:polygon(16px 0,100% 0,calc(100% - 16px) 100%,0 100%);
-}
-.form-submit:hover { background:#fff; box-shadow:0 0 50px var(--cyan-glow); transform:translateY(-2px); }
-
-/* ─── SOCIALS ─── */
-.socials-bar { padding:80px 5vw; max-width:1280px; margin:0 auto; }
-.socials-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:12px; margin-top:48px; }
-.social-item {
-  border:1px solid var(--border); padding:24px 16px; text-align:center;
-  transition:.35s; cursor:pointer; text-decoration:none; display:block; position:relative; overflow:hidden;
-}
-.social-item::after { content:''; position:absolute; inset:0; background:var(--cyan); transform:scaleY(0); transform-origin:bottom; transition:.3s; z-index:0; }
-.social-item:hover { border-color:var(--cyan); }
-.social-item:hover::after { transform:scaleY(1); }
-.social-item:hover .si-name, .social-item:hover .si-sub { color:var(--bg); position:relative; z-index:1; }
-.social-item:hover .si-ico { position:relative; z-index:1; }
-.si-ico { font-size:1.8rem; margin-bottom:.6rem; display:block; position:relative; z-index:1; }
-.si-name { font-family:'Orbitron',sans-serif; font-size:.62rem; font-weight:700; letter-spacing:1px; color:var(--text); transition:.3s; position:relative; z-index:1; }
-.si-sub { font-size:.72rem; color:var(--muted); transition:.3s; margin-top:.2rem; position:relative; z-index:1; }
-
-/* ─── FOOTER ─── */
-footer {
-  border-top:1px solid var(--border); padding:48px 5vw;
-  display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1.5rem;
-  position:relative; z-index:1;
-}
-.footer-logo { font-family:'Orbitron',sans-serif; font-weight:900; font-size:1.1rem; letter-spacing:4px; }
-.footer-logo em { color:var(--cyan); font-style:normal; }
-.footer-links { display:flex; gap:2rem; }
-.footer-links a { font-size:.78rem; letter-spacing:1px; color:var(--muted); text-decoration:none; transition:.25s; }
-.footer-links a:hover { color:var(--cyan); }
-.footer-copy { font-family:'Share Tech Mono',monospace; font-size:.62rem; letter-spacing:1px; color:var(--muted); }
-
-/* ─── REVEAL ─── */
-.reveal { opacity:0; transform:translateY(40px); transition:opacity .8s ease, transform .8s ease; }
-.reveal.in { opacity:1; transform:translateY(0); }
-
-/* ─── ANIMATIONS ─── */
-@keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
-
-/* ─── RESPONSIVE ─── */
-@media(max-width:900px){
-  .nav-links,.nav-btn{display:none}
-  .hamburger{display:flex}
-  .about-inner{grid-template-columns:1fr}
-  .services-grid{grid-template-columns:1fr}
-  .pricing-grid{grid-template-columns:1fr}
-  .contact-grid{grid-template-columns:1fr}
-  footer{flex-direction:column;text-align:center}
-  .footer-links{flex-wrap:wrap;justify-content:center}
-}
-@media(max-width:600px){
-  .hero-metrics{gap:2rem}
-  .team-grid{grid-template-columns:1fr 1fr}
-  .socials-grid{grid-template-columns:repeat(2,1fr)}
-  .step{grid-template-columns:50px 1fr;gap:16px}
-  .step-num{font-size:2rem}
-}
+/* ─── ARIA CHAT ─── */
+#chat-bubble{position:fixed;bottom:28px;right:28px;z-index:500;cursor:pointer}
+.chat-fab{width:60px;height:60px;border-radius:50%;background:var(--cyan);display:flex;align-items:center;justify-content:center;font-size:1.5rem;box-shadow:0 0 30px var(--cyan-glow),0 4px 20px rgba(0,0,0,.4);transition:.3s;border:none;cursor:pointer;animation:fabPulse 3s ease-in-out infinite}
+@keyframes fabPulse{0%,100%{box-shadow:0 0 30px var(--cyan-glow),0 4px 20px rgba(0,0,0,.4)}50%{box-shadow:0 0 50px var(--cyan-glow),0 4px 30px rgba(0,0,0,.5)}}
+.chat-fab:hover{transform:scale(1.1)}
+.chat-fab-badge{position:absolute;top:-4px;right:-4px;width:20px;height:20px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;color:var(--bg);font-family:'Orbitron',sans-serif;animation:blink 2s infinite}
+#chat-window{position:fixed;bottom:100px;right:28px;z-index:500;width:360px;max-width:calc(100vw - 40px);background:var(--surface);border:1px solid var(--border-h);display:none;flex-direction:column;box-shadow:0 20px 80px rgba(0,0,0,.6),0 0 40px rgba(0,229,255,.08);overflow:hidden}
+#chat-window.open{display:flex;animation:chatSlide .3s ease}
+@keyframes chatSlide{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.chat-header{background:var(--surface2);padding:16px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border)}
+.chat-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#0a4fff,var(--cyan));display:flex;align-items:center;justify-content:center;font-size:1rem;position:relative;flex-shrink:0}
+.chat-avatar::after{content:'';position:absolute;bottom:-1px;right:-1px;width:11px;height:11px;background:var(--green);border-radius:50%;border:2px solid var(--surface2)}
+.chat-hinfo{flex:1}
+.chat-hname{font-family:'Orbitron',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:1px;color:var(--text)}
+.chat-hstatus{font-family:'Share Tech Mono',monospace;font-size:.58rem;color:var(--green);letter-spacing:1px}
+.chat-close{background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;padding:4px;transition:.2s;line-height:1}
+.chat-close:hover{color:var(--text)}
+.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;max-height:360px;scroll-behavior:smooth}
+.chat-messages::-webkit-scrollbar{width:4px}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--border-h);border-radius:2px}
+.msg{display:flex;flex-direction:column;max-width:84%}
+.msg.aria{align-self:flex-start}
+.msg.user{align-self:flex-end}
+.msg-bubble{padding:10px 14px;font-size:.85rem;line-height:1.5;white-space:pre-line}
+.msg.aria .msg-bubble{background:var(--surface2);border:1px solid var(--border);border-radius:0 12px 12px 12px;color:var(--text)}
+.msg.user .msg-bubble{background:rgba(0,229,255,.15);border:1px solid rgba(0,229,255,.3);border-radius:12px 12px 0 12px;color:var(--text)}
+.msg-time{font-family:'Share Tech Mono',monospace;font-size:.52rem;color:var(--muted);margin-top:3px;padding:0 4px}
+.msg.user .msg-time{text-align:right}
+.chat-typing{display:flex;align-items:center;gap:5px;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:0 12px 12px 12px;width:fit-content}
+.typing-dot{width:6px;height:6px;background:var(--cyan);border-radius:50%;animation:typingAnim 1.2s infinite}
+.typing-dot:nth-child(2){animation-delay:.2s}
+.typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes typingAnim{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-6px);opacity:1}}
+.chat-options{display:flex;flex-wrap:wrap;gap:6px;padding:8px 16px}
+.chat-opt{font-family:'Share Tech Mono',monospace;font-size:.65rem;letter-spacing:1px;padding:6px 12px;background:transparent;border:1px solid var(--border-h);color:var(--cyan);cursor:pointer;transition:.25s;border-radius:4px}
+.chat-opt:hover{background:var(--cyan-dim);border-color:var(--cyan)}
+.chat-input-row{display:flex;align-items:center;gap:8px;padding:12px 16px;border-top:1px solid var(--border);background:var(--surface2)}
+.chat-input{flex:1;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:10px 12px;font-family:'Exo 2',sans-serif;font-size:.85rem;outline:none;transition:.3s;border-radius:4px}
+.chat-input:focus{border-color:var(--cyan)}
+.chat-input::placeholder{color:var(--muted)}
+.chat-send{background:var(--cyan);border:none;color:var(--bg);width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:.3s;flex-shrink:0}
+.chat-send:hover{background:#fff;transform:scale(1.1)}
+.ticket-confirm{padding:20px;text-align:center;border-top:1px solid var(--border)}
+.ticket-id{font-family:'Share Tech Mono',monospace;font-size:.7rem;letter-spacing:2px;color:var(--green);margin-bottom:.5rem}
+.ticket-msg{font-size:.82rem;color:var(--muted);line-height:1.6}
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s ease}
+.reveal.in{opacity:1;transform:translateY(0)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:900px){.nav-links,.nav-btn{display:none}.hamburger{display:flex}.about-inner{grid-template-columns:1fr}.services-grid{grid-template-columns:1fr}.footer-top{flex-direction:column}}
+@media(max-width:600px){.hero-metrics{gap:2rem}.team-grid{grid-template-columns:1fr 1fr}.socials-grid{grid-template-columns:repeat(2,1fr)}.step{grid-template-columns:50px 1fr;gap:16px}.step-num{font-size:2rem}#chat-window{bottom:90px;right:16px;left:16px;width:auto}#chat-bubble{right:16px;bottom:20px}}
 </style>
 </head>
 <body>
-
 <canvas id="bgCanvas"></canvas>
 <div class="cur" id="dot" style="top:0;left:0"><div class="cur-dot"></div></div>
 <div class="cur" id="ring" style="top:0;left:0"><div class="cur-ring"></div></div>
 
-<!-- NAV -->
 <nav>
   <a class="logo" href="#"><em>Rev</em><span>Matrix</span></a>
   <ul class="nav-links">
     <li><a href="#services">Services</a></li>
     <li><a href="#team">AI Team</a></li>
-    <li><a href="#pricing">Pricing</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#connect">Connect</a></li>
   </ul>
-  <button class="nav-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Hire Us</button>
-  <div class="hamburger" onclick="toggleMenu()">
-    <span></span><span></span><span></span>
-  </div>
+  <button class="nav-btn" onclick="openChat()">Talk to ARIA</button>
+  <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
 </nav>
-
 <div class="mobile-nav" id="mobileNav">
   <a href="#services" onclick="toggleMenu()">Services</a>
   <a href="#team" onclick="toggleMenu()">AI Team</a>
-  <a href="#pricing" onclick="toggleMenu()">Pricing</a>
-  <a href="#contact" onclick="toggleMenu()">Contact</a>
+  <a href="#process" onclick="toggleMenu()">Process</a>
+  <a href="#connect" onclick="toggleMenu()">Connect</a>
 </div>
 
-<!-- HERO -->
 <section class="hero" id="home">
   <div class="hero-chip"><span class="chip-dot"></span>SYSTEMS ONLINE · AI WORKFORCE ACTIVE</div>
-  <h1 class="hero-title">
-    <span class="t1">REV</span>
-    <span class="t2">MATRIX</span>
-  </h1>
+  <h1 class="hero-title"><span class="t1">REV</span><span class="t2">MATRIX</span></h1>
   <p class="hero-tag">Automating the Future. Virtually.</p>
   <p class="hero-desc">A fully AI-powered virtual technology company delivering elite solutions in web development, cybersecurity, data science, autonomous agents and quantum computing — operating 24/7.</p>
   <div class="hero-btns">
-    <a class="btn-p" href="#contact">Launch a Project</a>
+    <button class="btn-p" onclick="openChat()">Talk to Our AI Agent</button>
     <a class="btn-s" href="#services">Explore Services</a>
   </div>
   <div class="hero-metrics">
@@ -399,35 +234,15 @@ footer {
     <div><div class="metric-val">∞</div><div class="metric-lbl">Scalability</div></div>
     <div><div class="metric-val">100%</div><div class="metric-lbl">Virtual</div></div>
   </div>
-  <div class="scroll-hint">
-    <span>SCROLL</span>
-    <div class="scroll-line"></div>
-  </div>
+  <div class="scroll-hint"><span>SCROLL</span><div class="scroll-line"></div></div>
 </section>
 
-<!-- MARQUEE -->
 <div class="marquee-wrap">
   <div class="marquee-track">
-    <span class="marquee-item">WEB DEVELOPMENT <em>·</em></span>
-    <span class="marquee-item">CYBERSECURITY <em>·</em></span>
-    <span class="marquee-item">AI AGENTS <em>·</em></span>
-    <span class="marquee-item">DATA SCIENCE <em>·</em></span>
-    <span class="marquee-item">QUANTUM COMPUTING <em>·</em></span>
-    <span class="marquee-item">CLOUD DEVOPS <em>·</em></span>
-    <span class="marquee-item">MACHINE LEARNING <em>·</em></span>
-    <span class="marquee-item">LLM INTEGRATION <em>·</em></span>
-    <span class="marquee-item">WEB DEVELOPMENT <em>·</em></span>
-    <span class="marquee-item">CYBERSECURITY <em>·</em></span>
-    <span class="marquee-item">AI AGENTS <em>·</em></span>
-    <span class="marquee-item">DATA SCIENCE <em>·</em></span>
-    <span class="marquee-item">QUANTUM COMPUTING <em>·</em></span>
-    <span class="marquee-item">CLOUD DEVOPS <em>·</em></span>
-    <span class="marquee-item">MACHINE LEARNING <em>·</em></span>
-    <span class="marquee-item">LLM INTEGRATION <em>·</em></span>
+    <span class="marquee-item">WEB DEVELOPMENT <em>·</em></span><span class="marquee-item">CYBERSECURITY <em>·</em></span><span class="marquee-item">AI AGENTS <em>·</em></span><span class="marquee-item">DATA SCIENCE <em>·</em></span><span class="marquee-item">QUANTUM COMPUTING <em>·</em></span><span class="marquee-item">CLOUD DEVOPS <em>·</em></span><span class="marquee-item">MACHINE LEARNING <em>·</em></span><span class="marquee-item">LLM INTEGRATION <em>·</em></span><span class="marquee-item">WEB DEVELOPMENT <em>·</em></span><span class="marquee-item">CYBERSECURITY <em>·</em></span><span class="marquee-item">AI AGENTS <em>·</em></span><span class="marquee-item">DATA SCIENCE <em>·</em></span><span class="marquee-item">QUANTUM COMPUTING <em>·</em></span><span class="marquee-item">CLOUD DEVOPS <em>·</em></span><span class="marquee-item">MACHINE LEARNING <em>·</em></span><span class="marquee-item">LLM INTEGRATION <em>·</em></span>
   </div>
 </div>
 
-<!-- ABOUT -->
 <section class="about reveal" id="about">
   <div class="about-inner">
     <div>
@@ -435,7 +250,7 @@ footer {
       <h2 class="section-heading">The First Fully<br><span>AI-Staffed</span><br>Tech Company</h2>
       <p class="about-text">RevMatrix operates at the intersection of human vision and artificial intelligence. Founded to prove that a single determined founder backed by the world's most powerful AI systems can compete with — and outperform — traditional agencies.</p>
       <p class="about-text">Our workforce runs 24/7. Claude architects solutions, DeepSeek crunches algorithms, Gemini handles research, Copilot reviews code, and GPT handles client communications. Zero downtime. Zero burnout. Infinite output.</p>
-      <a class="btn-s" href="#contact" style="margin-top:1.5rem;display:inline-block">Work With Us →</a>
+      <button class="btn-s" onclick="openChat()" style="margin-top:1.5rem">Work With Us →</button>
     </div>
     <div class="about-visual reveal">
       <div class="hex-grid">
@@ -450,7 +265,6 @@ footer {
   </div>
 </section>
 
-<!-- SERVICES -->
 <section class="services reveal" id="services">
   <div class="services-inner">
     <div class="section-head">
@@ -458,324 +272,278 @@ footer {
       <h2 class="section-heading">Our Service <span>Matrix</span></h2>
     </div>
     <div class="services-grid">
-      <div class="svc">
-        <div class="svc-num">SERVICE // 01</div>
-        <span class="svc-ico">🌐</span>
-        <div class="svc-name">Web Development</div>
-        <p class="svc-desc">High-performance websites, SaaS platforms, dashboards, and e-commerce solutions built at AI speed with enterprise-grade quality.</p>
-        <div class="svc-tags"><span class="tag">React</span><span class="tag">Next.js</span><span class="tag">Node.js</span><span class="tag">Tailwind</span></div>
-        <div class="svc-price">FROM $500 / PROJECT</div>
-      </div>
-      <div class="svc">
-        <div class="svc-num">SERVICE // 02</div>
-        <span class="svc-ico">🛡️</span>
-        <div class="svc-name">Cybersecurity</div>
-        <p class="svc-desc">Penetration testing, vulnerability assessments, security audits and zero-day defense strategies to protect your digital assets.</p>
-        <div class="svc-tags"><span class="tag">OWASP</span><span class="tag">Metasploit</span><span class="tag">Nessus</span><span class="tag">Burp</span></div>
-        <div class="svc-price">FROM $1,000 / AUDIT</div>
-      </div>
-      <div class="svc">
-        <div class="svc-num">SERVICE // 03</div>
-        <span class="svc-ico">🧠</span>
-        <div class="svc-name">AI & Data Science</div>
-        <p class="svc-desc">Custom ML models, NLP pipelines, predictive analytics and AI-powered dashboards trained specifically on your business data.</p>
-        <div class="svc-tags"><span class="tag">Python</span><span class="tag">TensorFlow</span><span class="tag">HuggingFace</span><span class="tag">PyTorch</span></div>
-        <div class="svc-price">FROM $2,000 / MODEL</div>
-      </div>
-      <div class="svc">
-        <div class="svc-num">SERVICE // 04</div>
-        <span class="svc-ico">🤖</span>
-        <div class="svc-name">Autonomous AI Agents</div>
-        <p class="svc-desc">Multi-agent systems that plan, execute and monitor complex workflows independently — dramatically reducing manual operation costs.</p>
-        <div class="svc-tags"><span class="tag">LangChain</span><span class="tag">CrewAI</span><span class="tag">AutoGen</span><span class="tag">n8n</span></div>
-        <div class="svc-price">FROM $3,000 / SYSTEM</div>
-      </div>
-      <div class="svc">
-        <div class="svc-num">SERVICE // 05</div>
-        <span class="svc-ico">⚛️</span>
-        <div class="svc-name">Quantum Computing</div>
-        <p class="svc-desc">Quantum algorithm design, optimization problems and AI-quantum hybrid solutions positioning your business ahead of the curve.</p>
-        <div class="svc-tags"><span class="tag">Qiskit</span><span class="tag">Cirq</span><span class="tag">PennyLane</span><span class="tag">Q#</span></div>
-        <div class="svc-price">FROM $5,000 / PROJECT</div>
-      </div>
-      <div class="svc">
-        <div class="svc-num">SERVICE // 06</div>
-        <span class="svc-ico">☁️</span>
-        <div class="svc-name">Cloud & DevOps</div>
-        <p class="svc-desc">Scalable cloud architecture, automated CI/CD pipelines, containerization and 24/7 infrastructure monitoring across all major clouds.</p>
-        <div class="svc-tags"><span class="tag">AWS</span><span class="tag">Docker</span><span class="tag">Kubernetes</span><span class="tag">Terraform</span></div>
-        <div class="svc-price">FROM $800 / SETUP</div>
-      </div>
+      <div class="svc"><div class="svc-num">SERVICE // 01</div><span class="svc-ico">🌐</span><div class="svc-name">Web Development</div><p class="svc-desc">High-performance websites, SaaS platforms, dashboards, and e-commerce solutions built at AI speed with enterprise-grade quality.</p><div class="svc-tags"><span class="tag">React</span><span class="tag">Next.js</span><span class="tag">Node.js</span><span class="tag">Tailwind</span></div><button class="svc-cta" onclick="openChatWithService('Web Development')">→ Request via Email</button></div>
+      <div class="svc"><div class="svc-num">SERVICE // 02</div><span class="svc-ico">🛡️</span><div class="svc-name">Cybersecurity</div><p class="svc-desc">Penetration testing, vulnerability assessments, security audits and zero-day defense strategies to protect your digital assets.</p><div class="svc-tags"><span class="tag">OWASP</span><span class="tag">Metasploit</span><span class="tag">Nessus</span><span class="tag">Burp</span></div><button class="svc-cta" onclick="openChatWithService('Cybersecurity')">→ Request via Email</button></div>
+      <div class="svc"><div class="svc-num">SERVICE // 03</div><span class="svc-ico">🧠</span><div class="svc-name">AI & Data Science</div><p class="svc-desc">Custom ML models, NLP pipelines, predictive analytics and AI-powered dashboards trained specifically on your business data.</p><div class="svc-tags"><span class="tag">Python</span><span class="tag">TensorFlow</span><span class="tag">HuggingFace</span><span class="tag">PyTorch</span></div><button class="svc-cta" onclick="openChatWithService('AI & Data Science')">→ Request via Email</button></div>
+      <div class="svc"><div class="svc-num">SERVICE // 04</div><span class="svc-ico">🤖</span><div class="svc-name">Autonomous AI Agents</div><p class="svc-desc">Multi-agent systems that plan, execute and monitor complex workflows independently — dramatically reducing manual operation costs.</p><div class="svc-tags"><span class="tag">LangChain</span><span class="tag">CrewAI</span><span class="tag">AutoGen</span><span class="tag">n8n</span></div><button class="svc-cta" onclick="openChatWithService('AI Agents & Automation')">→ Request via Email</button></div>
+      <div class="svc"><div class="svc-num">SERVICE // 05</div><span class="svc-ico">⚛️</span><div class="svc-name">Quantum Computing</div><p class="svc-desc">Quantum algorithm design, optimization problems and AI-quantum hybrid solutions positioning your business ahead of the curve.</p><div class="svc-tags"><span class="tag">Qiskit</span><span class="tag">Cirq</span><span class="tag">PennyLane</span><span class="tag">Q#</span></div><button class="svc-cta" onclick="openChatWithService('Quantum Computing')">→ Request via Email</button></div>
+      <div class="svc"><div class="svc-num">SERVICE // 06</div><span class="svc-ico">☁️</span><div class="svc-name">Cloud & DevOps</div><p class="svc-desc">Scalable cloud architecture, automated CI/CD pipelines, containerization and 24/7 infrastructure monitoring across all major clouds.</p><div class="svc-tags"><span class="tag">AWS</span><span class="tag">Docker</span><span class="tag">Kubernetes</span><span class="tag">Terraform</span></div><button class="svc-cta" onclick="openChatWithService('Cloud & DevOps')">→ Request via Email</button></div>
     </div>
   </div>
 </section>
 
-<!-- TEAM -->
 <section class="team reveal" id="team">
   <div class="section-eyebrow">// The Workforce</div>
   <h2 class="section-heading">Our <span style="color:var(--cyan)">AI-Powered</span> Team</h2>
   <div class="team-grid">
-    <div class="member">
-      <div class="m-ring">👤</div>
-      <div class="m-name">Founder & CEO</div>
-      <div class="m-role">Vision · Strategy</div>
-      <div class="m-online">ONLINE</div>
-    </div>
-    <div class="member">
-      <div class="m-ring">🔵</div>
-      <div class="m-name">Claude</div>
-      <div class="m-role">Strategy · Full-Stack</div>
-      <div class="m-online">ONLINE</div>
-    </div>
-    <div class="member">
-      <div class="m-ring">🟣</div>
-      <div class="m-name">Gemini</div>
-      <div class="m-role">Research · Multimodal</div>
-      <div class="m-online">ONLINE</div>
-    </div>
-    <div class="member">
-      <div class="m-ring">🔴</div>
-      <div class="m-name">DeepSeek</div>
-      <div class="m-role">Code · Algorithms</div>
-      <div class="m-online">ONLINE</div>
-    </div>
-    <div class="member">
-      <div class="m-ring">🟢</div>
-      <div class="m-name">Copilot</div>
-      <div class="m-role">Code Review · Git</div>
-      <div class="m-online">ONLINE</div>
-    </div>
-    <div class="member">
-      <div class="m-ring">🟡</div>
-      <div class="m-name">GPT-4</div>
-      <div class="m-role">Comms · Documents</div>
-      <div class="m-online">ONLINE</div>
-    </div>
+    <div class="member"><div class="m-ring">👤</div><div class="m-name">Founder & CEO</div><div class="m-role">Vision · Strategy</div><div class="m-online">ONLINE</div></div>
+    <div class="member"><div class="m-ring">🔵</div><div class="m-name">Claude</div><div class="m-role">Strategy · Full-Stack</div><div class="m-online">ONLINE</div></div>
+    <div class="member"><div class="m-ring">🟣</div><div class="m-name">Gemini</div><div class="m-role">Research · Multimodal</div><div class="m-online">ONLINE</div></div>
+    <div class="member"><div class="m-ring">🔴</div><div class="m-name">DeepSeek</div><div class="m-role">Code · Algorithms</div><div class="m-online">ONLINE</div></div>
+    <div class="member"><div class="m-ring">🟢</div><div class="m-name">Copilot</div><div class="m-role">Code Review · Git</div><div class="m-online">ONLINE</div></div>
+    <div class="member"><div class="m-ring">🟡</div><div class="m-name">GPT-4</div><div class="m-role">Comms · Documents</div><div class="m-online">ONLINE</div></div>
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
 <section class="how reveal" id="process">
   <div class="how-inner">
     <div class="section-eyebrow">// The Process</div>
     <h2 class="section-heading">How <span style="color:var(--cyan)">RevMatrix</span> Works</h2>
     <div class="steps">
-      <div class="step">
-        <div class="step-num">01</div>
-        <div>
-          <div class="step-meta">DISCOVER · 24 HOURS</div>
-          <div class="step-title">Brief & Requirements</div>
-          <p class="step-desc">Tell us your goals, constraints and vision. Our AI systems analyze your requirements and map the optimal solution architecture — within hours, not weeks.</p>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">02</div>
-        <div>
-          <div class="step-meta">ARCHITECT · 48 HOURS</div>
-          <div class="step-title">Multi-Agent Planning</div>
-          <p class="step-desc">Multiple AI models collaborate to design your blueprint — technology stack, security protocols, data flows and delivery milestones, all optimized for your specific use case.</p>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">03</div>
-        <div>
-          <div class="step-meta">BUILD · CONTINUOUS</div>
-          <div class="step-title">Parallel AI Execution</div>
-          <p class="step-desc">Development runs 24/7 in parallel. Agents write, review, test and optimize simultaneously — cutting delivery time by up to 80% vs traditional agencies.</p>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">04</div>
-        <div>
-          <div class="step-meta">DELIVER & SUPPORT</div>
-          <div class="step-title">Deploy & Monitor</div>
-          <p class="step-desc">Automated testing, human oversight review, seamless deployment and ongoing AI-powered monitoring. Your product never sleeps — neither do we.</p>
-        </div>
-      </div>
+      <div class="step"><div class="step-num">01</div><div><div class="step-meta">DISCOVER · 24 HOURS</div><div class="step-title">Brief & Requirements</div><p class="step-desc">Tell us your goals, constraints and vision. Our AI systems analyze your requirements and map the optimal solution architecture — within hours, not weeks.</p></div></div>
+      <div class="step"><div class="step-num">02</div><div><div class="step-meta">ARCHITECT · 48 HOURS</div><div class="step-title">Multi-Agent Planning</div><p class="step-desc">Multiple AI models collaborate to design your blueprint — technology stack, security protocols, data flows and delivery milestones, all optimized for your use case.</p></div></div>
+      <div class="step"><div class="step-num">03</div><div><div class="step-meta">BUILD · CONTINUOUS</div><div class="step-title">Parallel AI Execution</div><p class="step-desc">Development runs 24/7 in parallel. Agents write, review, test and optimize simultaneously — cutting delivery time by up to 80% vs traditional agencies.</p></div></div>
+      <div class="step"><div class="step-num">04</div><div><div class="step-meta">DELIVER & SUPPORT</div><div class="step-title">Deploy & Monitor</div><p class="step-desc">Automated testing, human oversight review, seamless deployment and ongoing AI-powered monitoring. Your product never sleeps — neither do we.</p></div></div>
     </div>
   </div>
 </section>
 
-<!-- PRICING -->
-<section class="pricing reveal" id="pricing">
-  <div class="section-eyebrow">// Investment</div>
-  <h2 class="section-heading">Simple <span style="color:var(--cyan)">Transparent</span> Pricing</h2>
-  <div class="pricing-grid">
-    <div class="plan">
-      <div class="plan-name">Starter</div>
-      <div class="plan-price"><sup>$</sup>499</div>
-      <div class="plan-period">one-time project</div>
-      <ul class="plan-features">
-        <li>Landing page or simple web app</li>
-        <li>AI-powered development</li>
-        <li>1 revision round</li>
-        <li>7-day delivery</li>
-        <li>Basic SEO setup</li>
-      </ul>
-      <button class="plan-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get Started</button>
-    </div>
-    <div class="plan featured">
-      <div class="plan-badge">MOST POPULAR</div>
-      <div class="plan-name">Professional</div>
-      <div class="plan-price"><sup>$</sup>1,999</div>
-      <div class="plan-period">per project</div>
-      <ul class="plan-features">
-        <li>Full-stack web app or SaaS</li>
-        <li>AI + cybersecurity integration</li>
-        <li>3 revision rounds</li>
-        <li>14-day delivery</li>
-        <li>AI agent integration</li>
-        <li>30-day support included</li>
-      </ul>
-      <button class="plan-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get Started</button>
-    </div>
-    <div class="plan">
-      <div class="plan-name">Enterprise</div>
-      <div class="plan-price">Custom</div>
-      <div class="plan-period">tailored pricing</div>
-      <ul class="plan-features">
-        <li>Full AI agent system build</li>
-        <li>Data science + ML models</li>
-        <li>Quantum computing consulting</li>
-        <li>Unlimited revisions</li>
-        <li>Dedicated AI team</li>
-        <li>Ongoing retainer available</li>
-      </ul>
-      <button class="plan-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Contact Us</button>
-    </div>
-  </div>
+<section class="contact-banner reveal" id="connect">
+  <h2>Ready to Build the <span style="color:var(--cyan)">Future?</span></h2>
+  <p>Chat with ARIA — our AI receptionist — to submit your project brief. She'll collect your requirements and raise a ticket directly to our team.</p>
+  <button class="btn-p" onclick="openChat()">Chat with ARIA Now →</button>
 </section>
 
-<!-- CONTACT -->
-<section class="contact reveal" id="contact">
-  <div class="contact-inner">
-    <div class="section-eyebrow">// Start a Project</div>
-    <h2 class="section-heading">Let's Build<br><span style="color:var(--cyan)">Something Real</span></h2>
-    <p style="color:var(--muted);margin-top:1rem;font-size:.95rem">Fill in the form and our AI team will analyze your project and get back to you within 24 hours.</p>
-    <div class="contact-grid">
-      <div class="form-group">
-        <label class="form-label">YOUR NAME</label>
-        <input class="form-input" type="text" placeholder="John Smith">
-      </div>
-      <div class="form-group">
-        <label class="form-label">EMAIL ADDRESS</label>
-        <input class="form-input" type="email" placeholder="john@company.com">
-      </div>
-      <div class="form-group">
-        <label class="form-label">SERVICE NEEDED</label>
-        <select class="form-select form-input">
-          <option value="">Select a service...</option>
-          <option>Web Development</option>
-          <option>Cybersecurity</option>
-          <option>AI & Data Science</option>
-          <option>AI Agents / Automation</option>
-          <option>Quantum Computing</option>
-          <option>Cloud & DevOps</option>
-          <option>Multiple Services</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">BUDGET RANGE</label>
-        <select class="form-select form-input">
-          <option value="">Select budget...</option>
-          <option>$500 – $2,000</option>
-          <option>$2,000 – $5,000</option>
-          <option>$5,000 – $15,000</option>
-          <option>$15,000+</option>
-        </select>
-      </div>
-      <div class="form-group full">
-        <label class="form-label">PROJECT DETAILS</label>
-        <textarea class="form-textarea" placeholder="Describe your project, goals and any specific requirements..."></textarea>
-      </div>
-      <button class="form-submit">SEND PROJECT BRIEF →</button>
-    </div>
-  </div>
-</section>
-
-<!-- SOCIALS -->
 <section class="socials-bar reveal">
   <div class="section-eyebrow">// Find Us Online</div>
   <h2 class="section-heading">Our Digital <span style="color:var(--cyan)">Presence</span></h2>
   <div class="socials-grid">
-    <a class="social-item" href="https://linkedin.com/company/revmatrix-ai" target="_blank">
-      <span class="si-ico">💼</span><div class="si-name">LinkedIn</div><div class="si-sub">B2B Network</div>
-    </a>
-    <a class="social-item" href="https://github.com/RevMatrix-AI" target="_blank">
-      <span class="si-ico">🐙</span><div class="si-name">GitHub</div><div class="si-sub">Open Source</div>
-    </a>
-    <a class="social-item" href="https://twitter.com/revmatrix_ai" target="_blank">
-      <span class="si-ico">🐦</span><div class="si-name">Twitter/X</div><div class="si-sub">AI Updates</div>
-    </a>
-    <a class="social-item" href="https://huggingface.co/RevMatrix" target="_blank">
-      <span class="si-ico">🤗</span><div class="si-name">Hugging Face</div><div class="si-sub">AI Models</div>
-    </a>
-    <a class="social-item" href="https://producthunt.com" target="_blank">
-      <span class="si-ico">🚀</span><div class="si-name">ProductHunt</div><div class="si-sub">Launches</div>
-    </a>
-    <a class="social-item" href="mailto:hello@revmatrix.ai">
-      <span class="si-ico">✉️</span><div class="si-name">Email</div><div class="si-sub">hello@revmatrix.ai</div>
-    </a>
+    <a class="social-item" href="https://linkedin.com/company/revmatrix-ai" target="_blank" rel="noopener noreferrer"><span class="si-ico">💼</span><div class="si-name">LinkedIn</div><div class="si-sub">B2B Network</div></a>
+    <a class="social-item" href="https://github.com/revmatrixai" target="_blank" rel="noopener noreferrer"><span class="si-ico">🐙</span><div class="si-name">GitHub</div><div class="si-sub">Open Source</div></a>
+    <a class="social-item" href="https://twitter.com/revmatrixai" target="_blank" rel="noopener noreferrer"><span class="si-ico">🐦</span><div class="si-name">Twitter/X</div><div class="si-sub">AI Updates</div></a>
+    <a class="social-item" href="https://huggingface.co/revmatrixai" target="_blank" rel="noopener noreferrer"><span class="si-ico">🤗</span><div class="si-name">Hugging Face</div><div class="si-sub">AI Models</div></a>
+    <a class="social-item" href="https://producthunt.com/@revmatrixai" target="_blank" rel="noopener noreferrer"><span class="si-ico">🚀</span><div class="si-name">ProductHunt</div><div class="si-sub">Launches</div></a>
+    <a class="social-item" href="javascript:void(0)" onclick="openChat()"><span class="si-ico">✉️</span><div class="si-name">Contact</div><div class="si-sub">Talk to ARIA</div></a>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
-  <div class="footer-logo"><em>Rev</em>Matrix</div>
-  <div class="footer-links">
-    <a href="#services">Services</a>
-    <a href="#team">Team</a>
-    <a href="#pricing">Pricing</a>
-    <a href="#contact">Contact</a>
+  <div class="footer-top">
+    <div class="footer-logo"><em>Rev</em>Matrix</div>
+    <div class="footer-links">
+      <a href="#services">Services</a><a href="#team">Team</a><a href="#process">Process</a><a href="javascript:void(0)" onclick="openChat()">Contact</a>
+    </div>
   </div>
-  <div class="footer-copy">© 2025 RevMatrix · AI-Powered Virtual Solutions · Built by Human + AI</div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 RevMatrix · AI-Powered Virtual Solutions</div>
+    <div class="footer-privacy">We collect only information you voluntarily submit. No tracking pixels, no cookies, no third-party analytics. Your data is used solely to respond to your inquiry.</div>
+  </div>
 </footer>
 
+<!-- ARIA CHAT WIDGET -->
+<div id="chat-bubble">
+  <button class="chat-fab" onclick="openChat()" aria-label="Chat with ARIA">🤖</button>
+  <div class="chat-fab-badge">1</div>
+</div>
+<div id="chat-window">
+  <div class="chat-header">
+    <div class="chat-avatar">🤖</div>
+    <div class="chat-hinfo"><div class="chat-hname">ARIA</div><div class="chat-hstatus">● AI Receptionist · Online</div></div>
+    <button class="chat-close" onclick="closeChat()" aria-label="Close">✕</button>
+  </div>
+  <div class="chat-messages" id="chatMessages"></div>
+  <div class="chat-options" id="chatOptions"></div>
+  <div class="chat-input-row" id="chatInputRow" style="display:none">
+    <input class="chat-input" id="chatInput" type="text" placeholder="Type your reply..." autocomplete="off" maxlength="400">
+    <button class="chat-send" id="chatSendBtn" aria-label="Send">➤</button>
+  </div>
+</div>
+
 <script>
-// Cursor
-const dot = document.getElementById('dot');
-const ring = document.getElementById('ring');
-document.addEventListener('mousemove', e => {
-  dot.style.left = e.clientX+'px'; dot.style.top = e.clientY+'px';
-  setTimeout(()=>{ ring.style.left=e.clientX+'px'; ring.style.top=e.clientY+'px'; }, 90);
+
+const _ep = atob('bWxncGd2cmo=');
+
+let _lastSubmit = 0; // rate limiting
+
+/* ── CURSOR ── */
+const dot=document.getElementById('dot'),ring=document.getElementById('ring');
+document.addEventListener('mousemove',e=>{
+  dot.style.left=e.clientX+'px';dot.style.top=e.clientY+'px';
+  setTimeout(()=>{ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px';},90);
 });
-document.querySelectorAll('a,button,.svc,.member,.social-item,.plan').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{ ring.querySelector('.cur-ring').style.cssText='width:60px;height:60px;border-color:rgba(0,229,255,.9)'; });
-  el.addEventListener('mouseleave',()=>{ ring.querySelector('.cur-ring').style.cssText=''; });
+document.querySelectorAll('a,button,.svc,.member,.social-item').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{ring.querySelector('.cur-ring').style.cssText='width:60px;height:60px;border-color:rgba(0,229,255,.9)';});
+  el.addEventListener('mouseleave',()=>{ring.querySelector('.cur-ring').style.cssText='';});
 });
 
-// Mobile nav
-function toggleMenu(){ document.getElementById('mobileNav').classList.toggle('open'); }
-
-// Matrix canvas
-const cv=document.getElementById('bgCanvas'), cx=cv.getContext('2d');
-function resize(){ cv.width=innerWidth; cv.height=innerHeight; }
-resize(); window.addEventListener('resize',resize);
-const cols=Math.floor(innerWidth/18), drops=Array(cols).fill(1);
+/* ── MATRIX CANVAS ── */
+const cv=document.getElementById('bgCanvas'),cx=cv.getContext('2d');
+function rsz(){cv.width=innerWidth;cv.height=innerHeight;}rsz();window.addEventListener('resize',rsz);
+const drops=Array(Math.floor(innerWidth/18)).fill(1);
 const chars='REVMATRIX01アイウエオ$#@!<>';
-setInterval(()=>{
-  cx.fillStyle='rgba(3,10,18,.06)'; cx.fillRect(0,0,cv.width,cv.height);
-  cx.fillStyle='#00e5ff'; cx.font='13px Share Tech Mono';
-  drops.forEach((y,i)=>{
-    cx.fillText(chars[Math.floor(Math.random()*chars.length)],i*18,y*18);
-    if(y*18>cv.height&&Math.random()>.975) drops[i]=0;
-    drops[i]++;
-  });
-},65);
+setInterval(()=>{cx.fillStyle='rgba(3,10,18,.06)';cx.fillRect(0,0,cv.width,cv.height);cx.fillStyle='#00e5ff';cx.font='13px Share Tech Mono';drops.forEach((y,i)=>{cx.fillText(chars[Math.floor(Math.random()*chars.length)],i*18,y*18);if(y*18>cv.height&&Math.random()>.975)drops[i]=0;drops[i]++;});},65);
 
-// Scroll reveal
-const obs=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
-},{threshold:.08});
+/* ── REVEAL ── */
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('in');});},{threshold:.08});
 document.querySelectorAll('.reveal').forEach(r=>obs.observe(r));
+function toggleMenu(){document.getElementById('mobileNav').classList.toggle('open');}
 
-// Form submit
-document.querySelector('.form-submit').addEventListener('click',()=>{
-  const btn=document.querySelector('.form-submit');
-  btn.textContent='✓ BRIEF RECEIVED — WE\'LL RESPOND IN 24HRS';
-  btn.style.background='#00ff88';
-  setTimeout(()=>{ btn.textContent='SEND PROJECT BRIEF →'; btn.style.background=''; },4000);
-});
+/* ═══════════════════════════════════════
+   ARIA — AI RECEPTIONIST (state machine)
+═══════════════════════════════════════ */
+const chatWin=document.getElementById('chat-window');
+const msgs=document.getElementById('chatMessages');
+const opts=document.getElementById('chatOptions');
+const inputRow=document.getElementById('chatInputRow');
+const inp=document.getElementById('chatInput');
+
+let S={step:'idle',name:'',email:'',service:'',details:'',timeline:'',preset:null};
+
+const tstamp=()=>new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+
+function openChat(){
+  chatWin.classList.add('open');
+  document.querySelector('.chat-fab-badge').style.display='none';
+  if(S.step==='idle'){S.step='greeting';startConvo();}
+}
+function openChatWithService(svc){S.preset=svc;openChat();}
+function closeChat(){chatWin.classList.remove('open');}
+
+function addMsg(text,sender,delay=0){
+  return new Promise(res=>{
+    setTimeout(()=>{
+      if(sender==='aria'){
+        const t=document.createElement('div');
+        t.className='msg aria';t.id='typing';
+        t.innerHTML='<div class="chat-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';
+        msgs.appendChild(t);msgs.scrollTop=msgs.scrollHeight;
+        setTimeout(()=>{const e=document.getElementById('typing');if(e)e.remove();bubble(text,sender);res();},700+text.length*6);
+      } else {bubble(text,sender);res();}
+    },delay);
+  });
+}
+function bubble(text,sender){
+  const d=document.createElement('div');d.className='msg '+sender;
+  const safe=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  d.innerHTML=`<div class="msg-bubble">${safe}</div><div class="msg-time">${tstamp()}</div>`;
+  msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;
+}
+function showOpts(arr){
+  opts.innerHTML='';
+  arr.forEach(o=>{const b=document.createElement('button');b.className='chat-opt';b.textContent=o.label;b.onclick=()=>{clearOpts();handleOpt(o);};opts.appendChild(b);});
+}
+function clearOpts(){opts.innerHTML='';}
+function showInp(ph='Type your reply...'){inputRow.style.display='flex';inp.placeholder=ph;inp.value='';setTimeout(()=>inp.focus(),100);}
+function hideInp(){inputRow.style.display='none';}
+function clean(s){return s.replace(/[<>"'&]/g,'').trim().substring(0,300);}
+
+async function startConvo(){
+  await addMsg("Hi there! 👋 I'm ARIA, RevMatrix's AI receptionist. I'll help connect you with our team.",'aria');
+  await addMsg("To get started, what's your name?",'aria',300);
+  showInp('Your full name...');
+}
+
+async function handleInput(val){
+  const v=clean(val);if(!v)return;
+  hideInp();clearOpts();bubble(v,'user');
+  switch(S.step){
+    case 'greeting':
+      if(v.length<2){await addMsg("Could you share your full name? 🙂",'aria');showInp('Your full name...');return;}
+      S.name=v;S.step='service';
+      await addMsg(`Nice to meet you, ${S.name}! 👋`,'aria',300);
+      if(S.preset){
+        S.service=S.preset;S.step='details';
+        await addMsg(`I see you're interested in ${S.service}. Tell me about your project — what are you trying to build?`,'aria',400);
+        showInp('Describe your project...');
+      } else {
+        await addMsg("Which service are you interested in?",'aria',400);
+        showOpts([
+          {label:'🌐 Web Development',value:'Web Development'},
+          {label:'🛡️ Cybersecurity',value:'Cybersecurity'},
+          {label:'🧠 AI & Data Science',value:'AI & Data Science'},
+          {label:'🤖 AI Agents',value:'AI Agents & Automation'},
+          {label:'⚛️ Quantum Computing',value:'Quantum Computing'},
+          {label:'☁️ Cloud & DevOps',value:'Cloud & DevOps'},
+        ]);
+      }
+      break;
+    case 'details':
+      if(v.length<8){await addMsg("Could you share a bit more detail? Even a sentence helps.",'aria');showInp('Describe your project...');return;}
+      S.details=v;S.step='timeline';
+      await addMsg("Great! What's your target timeline?",'aria',300);
+      showOpts([
+        {label:'⚡ ASAP (1–2 weeks)',value:'ASAP — 1-2 weeks'},
+        {label:'📅 Within 1 month',value:'Within 1 month'},
+        {label:'🗓️ 2–3 months',value:'2-3 months'},
+        {label:'🔭 Just exploring',value:'Flexible / Exploring'},
+      ]);
+      break;
+    case 'email':
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){await addMsg("That doesn't look like a valid email. Could you double-check?",'aria');showInp('your@email.com');return;}
+      S.email=v;S.step='confirm';
+      await addMsg("Perfect! Here's a summary of your inquiry:",'aria',300);
+      await addMsg(`📋 PROJECT BRIEF\n──────────────\nName: ${S.name}\nService: ${S.service}\nTimeline: ${S.timeline}\nEmail: ${S.email}\nDetails: ${S.details}`,'aria',500);
+      await addMsg("Shall I submit this to the RevMatrix team?",'aria',400);
+      showOpts([{label:'✅ Yes, submit!',value:'confirm'},{label:'✏️ Let me edit',value:'restart'}]);
+      break;
+  }
+}
+
+function handleOpt(o){
+  bubble(o.label||o.value,'user');
+  switch(S.step){
+    case 'service':
+      S.service=o.value;S.step='details';
+      addMsg("Tell me about your project — what are you trying to build or solve?",'aria',300);
+      showInp('Describe your project...');
+      break;
+    case 'timeline':
+      S.timeline=o.value;S.step='email';
+      addMsg("Got it. What's the best email address to reach you?",'aria',300);
+      showInp('your@email.com');
+      break;
+    case 'confirm':
+      if(o.value==='confirm')submitTicket();
+      else resetConvo();
+      break;
+  }
+}
+
+async function submitTicket(){
+  if(Date.now()-_lastSubmit<60000){await addMsg("Please wait a moment before submitting again. Thank you!",'aria');return;}
+  await addMsg("Submitting your ticket now...",'aria',200);
+  const tid='RMX-'+Math.random().toString(36).substr(2,6).toUpperCase();
+  try{
+    const fd=new FormData();
+    fd.append('name',S.name);
+    fd.append('email',S.email);
+    fd.append('_replyto',S.email);
+    fd.append('_subject',`[RevMatrix Ticket ${tid}] ${S.service} Inquiry`);
+    fd.append('service',S.service);
+    fd.append('timeline',S.timeline);
+    fd.append('project_details',S.details);
+    fd.append('ticket_id',tid);
+    fd.append('source','ARIA AI Receptionist');
+    fd.append('_gotcha',''); // honeypot — bots fill this; Formspree blocks it
+    const r=await fetch(`https://formspree.io/f/${_ep}`,{method:'POST',body:fd,headers:{Accept:'application/json'}});
+    if(r.ok){
+      _lastSubmit=Date.now();
+      clearOpts();hideInp();
+      msgs.innerHTML+=`<div class="ticket-confirm"><div class="ticket-id">✓ TICKET ${tid} SUBMITTED</div><div class="ticket-msg">Your inquiry has been sent to the RevMatrix team. We'll reply to <strong>${S.email}</strong> within 24 hours. Thank you, ${S.name}! 🚀</div></div>`;
+      msgs.scrollTop=msgs.scrollHeight;S.step='done';
+    } else throw new Error();
+  } catch(e){
+    await addMsg(`Something went wrong. Please email us directly at revmatrixai@gmail.com — reference: ${tid}`,'aria');
+  }
+}
+
+async function resetConvo(){
+  S={step:'greeting',name:'',email:'',service:'',details:'',timeline:'',preset:null};
+  msgs.innerHTML='';clearOpts();hideInp();await startConvo();
+}
+
+inp.addEventListener('keydown',e=>{if(e.key==='Enter')handleInput(inp.value);});
+document.getElementById('chatSendBtn').addEventListener('click',()=>handleInput(inp.value));
 </script>
 </body>
 </html>
