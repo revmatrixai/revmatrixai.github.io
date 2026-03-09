@@ -1,0 +1,54 @@
+# Environment & secrets — NEVER commit these
+.env
+.env.*
+*.env
+secrets.json
+*_token.txt
+*_key.txt
+config.secret.*
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+dist/
+build/
+*.egg-info/
+venv/
+.venv/
+env/
+
+# Reports (may contain scan data)
+/tmp/
+*.json.report
+/reports/
+trivy-results.sarif
+
+# Models (large files)
+*.pkl
+*.h5
+*.pt
+*.pth
+*.onnx
+
+# Notebooks (may contain outputs with data)
+*.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+.dockerignore
+
+# Node (if any frontend tooling)
+node_modules/
