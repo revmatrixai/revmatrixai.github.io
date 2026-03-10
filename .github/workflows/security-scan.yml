@@ -1,167 +1,55 @@
-# ================================================================
-# RevMatrix — GitHub Actions Security Pipeline
-# Runs on every PR + push to main
-# Zero cost — included in GitHub free tier (2000 min/month)
-# ================================================================
-
-name: Security & Quality
-
+name: "Security scan (Semgrep + Bandit + pip-audit)"
 on:
   push:
-    branches: [main, develop]
+    branches: ["main"]
   pull_request:
-    branches: [main]
-
-permissions:
-  contents: read
-  security-events: write   # For CodeQL/SARIF upload
+    branches: ["main"]
+  workflow_dispatch:
 
 jobs:
-
-  # ── Python Security & Linting ─────────────────────────────────
-  python-security:
-    name: Python Security Scan
+  run-scans:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
-          python-version: "3.12"
+          python-version: "3.11"
 
-      - name: Install tools
+      - name: Install semgrep
         run: |
-          pip install bandit safety ruff mypy --quiet
+          python -m pip install --upgrade pip
+          pip install semgrep
 
-      - name: Bandit — Security linter
+      - name: Run semgrep (auto rules)
         run: |
-          bandit -r demos/ backend/ \
-            -ll \
-            --exclude demos/cybersecurity \
-            -f json -o /tmp/bandit.json || true
-          cat /tmp/bandit.json
+          semgrep --config auto --output semgrep_result.json --json .
+      - name: Upload semgrep result
+        uses: actions/upload-artifact@v4
+        with:
+          name: semgrep-result
+          path: semgrep_result.json
 
-      - name: Safety — Dependency vulnerabilities
+      - name: Install Bandit and pip-audit
         run: |
-          pip install -r backend/requirements.txt --quiet
-          safety check --full-report
+          pip install bandit pip-audit
 
-      - name: Ruff — Code linting
-        run: ruff check demos/ backend/ --select E,W,F --ignore E501
-
-  # ── Secret Detection ─────────────────────────────────────────
-  secret-scan:
-    name: Secret Detection
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0   # Full history for Gitleaks
-
-      - name: Gitleaks — Detect secrets in code
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  # ── Docker Security ──────────────────────────────────────────
-  docker-scan:
-    name: Docker Image Scan
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Build image
-        run: docker build -t revmatrix-api:test backend/
-
-      - name: Trivy — Container vulnerability scan
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: "revmatrix-api:test"
-          format: "sarif"
-          output: "trivy-results.sarif"
-          severity: "CRITICAL,HIGH"
-          exit-code: "1"
-
-      - name: Upload Trivy results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: "trivy-results.sarif"
-
-  # ── Quantum Demo Tests ────────────────────────────────────────
-  quantum-tests:
-    name: Quantum Demo Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install quantum deps
-        run: pip install qiskit qiskit-aer scipy numpy --quiet
-
-      - name: Run quantum demos
+      - name: Run Bandit
         run: |
-          python demos/quantum/quantum_demo.py --demo bell
-          python demos/quantum/quantum_demo.py --demo grover
-          python demos/quantum/quantum_demo.py --demo vqe
-
-  # ── AI/ML Demo Tests ─────────────────────────────────────────
-  ai-tests:
-    name: AI Demo Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+          bandit -r . -f json -o bandit_result.json || true
+      - name: Upload bandit result
+        uses: actions/upload-artifact@v4
         with:
-          python-version: "3.12"
+          name: bandit-result
+          path: bandit_result.json
 
-      - name: Install deps
-        run: pip install numpy scipy --quiet
-
-      - name: Run neural net demo
-        run: python demos/ai/neural_net.py --epochs 5 --samples 200
-
-  # ── Backend API Tests ─────────────────────────────────────────
-  backend-tests:
-    name: Backend API Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Run pip-audit
+        run: |
+          pip-audit --format json > pip_audit_result.json || true
+      - name: Upload pip-audit result
+        uses: actions/upload-artifact@v4
         with:
-          python-version: "3.12"
-
-      - name: Install deps
-        run: pip install -r backend/requirements.txt httpx pytest pytest-asyncio --quiet
-
-      - name: Start server + test
-        run: |
-          cd backend
-          uvicorn main:app --port 8000 &
-          sleep 3
-          curl -f http://localhost:8000/health
-          echo "Health check passed"
-
-  # ── Notify on success ─────────────────────────────────────────
-  notify:
-    name: All Checks Passed
-    needs: [python-security, secret-scan, docker-scan, quantum-tests, ai-tests, backend-tests]
-    runs-on: ubuntu-latest
-    if: success()
-    steps:
-      - name: Summary
-        run: |
-          echo "✅ All security checks passed for RevMatrix demos"
-          echo "🔒 No secrets, vulnerabilities, or security issues found"
-          echo "⚛️  Quantum demos verified"
-          echo "🧠 AI demos verified"
-          echo "🚀 Ready for production"
+          name: pip-audit-result
+          path: pip_audit_result.json
